@@ -18,6 +18,7 @@ use std::fmt;
 use std::io::{self, Read, Write};
 use rand::Rng;
 
+
 pub trait Rand : Sized {
     /// Generates a random instance of this type using the specified source of
     /// randomness.
@@ -83,6 +84,7 @@ pub trait Field:
 
         res
     }
+
 }
 
 /// This trait represents an element of a field that has a square root operation described for it.
@@ -299,6 +301,7 @@ pub trait PrimeField: Field {
     /// by t.
     fn root_of_unity() -> Self;
 }
+
 
 /// An "engine" is a collection of types (fields, elliptic curve groups, etc.)
 /// with well-defined relationships. Specific relationships (for example, a

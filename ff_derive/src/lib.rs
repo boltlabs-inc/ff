@@ -9,6 +9,7 @@ extern crate quote;
 extern crate num_bigint;
 extern crate num_integer;
 extern crate num_traits;
+extern crate rand;
 
 use num_bigint::BigUint;
 use num_integer::Integer;
@@ -136,9 +137,9 @@ fn prime_field_repr_impl(repr: &syn::Ident, limbs: usize) -> proc_macro2::TokenS
             }
         }
 
-        impl ::rand::Rand for #repr {
+        impl Rand for #repr {
             #[inline(always)]
-            fn rand<R: ::rand::Rng>(rng: &mut R) -> Self {
+            fn rand<R: ::rand::Rng + ?Sized>(rng: &mut R) -> Self {
                 #repr(rng.gen())
             }
         }
@@ -839,9 +840,9 @@ fn prime_field_impl(
             }
         }
 
-        impl ::rand::Rand for #name {
+        impl Rand for #name {
             /// Computes a uniformly random element using rejection sampling.
-            fn rand<R: ::rand::Rng>(rng: &mut R) -> Self {
+            fn rand<R: ::rand::Rng + ?Sized>(rng: &mut R) -> Self {
                 loop {
                     let mut tmp = #name(#repr::rand(rng));
 
@@ -852,6 +853,12 @@ fn prime_field_impl(
                         return tmp
                     }
                 }
+            }
+        }
+
+        impl ::rand::distributions::Distribution<#name> for ::rand::distributions::Standard {
+            fn sample<R: ::rand::Rng + ?Sized>(&self, rng: &mut R) -> #name {
+                #name::rand(rng)
             }
         }
 
