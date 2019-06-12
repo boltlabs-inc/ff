@@ -3,6 +3,9 @@
 extern crate byteorder;
 extern crate rand;
 
+#[cfg(test)]
+extern crate rand_xorshift;
+
 #[cfg(feature = "derive")]
 #[macro_use]
 extern crate ff_derive;
@@ -13,10 +16,17 @@ pub use ff_derive::*;
 use std::error::Error;
 use std::fmt;
 use std::io::{self, Read, Write};
+use rand::Rng;
+
+pub trait Rand : Sized {
+    /// Generates a random instance of this type using the specified source of
+    /// randomness.
+    fn rand<R: Rng + ?Sized>(rng: &mut R) -> Self;
+}
 
 /// This trait represents an element of a field.
 pub trait Field:
-    Sized + Eq + Copy + Clone + Send + Sync + fmt::Debug + fmt::Display + 'static + rand::Rand
+    Sized + Eq + Copy + Clone + Send + Sync + fmt::Debug + fmt::Display + 'static + Rand
 {
     /// Returns the zero element of the field, the additive identity.
     fn zero() -> Self;
@@ -100,7 +110,7 @@ pub trait PrimeFieldRepr:
     + fmt::Debug
     + fmt::Display
     + 'static
-    + rand::Rand
+    + Rand
     + AsRef<[u64]>
     + AsMut<[u64]>
     + From<u64>
