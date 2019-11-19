@@ -1,5 +1,5 @@
 [package]
-name = "ff"
+name = "ff_bl"
 version = "0.4.0"
 authors = ["Sean Bowe <ewillbefull@gmail.com>"]
 description = "Library for building and interfacing with finite fields"
